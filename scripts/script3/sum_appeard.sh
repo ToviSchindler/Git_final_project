@@ -1,35 +1,24 @@
 #!/bin/bash
 
-declare -A numbers
+declare -A num_to_word
+num_to_word=( [1]="one" [2]="two" [3]="three" [4]="four" [5]="five" [6]="six" [7]="seven" [8]="eight" [9]="nine" [10]="ten" )
 
-num_words=("zero" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine" "ten")
+declare -A count
 
-while true; do
-    read -p "enter a numbers between 1 and 10(or E to exit): " input
+read -p "Enter numbers separated by spaces: " input
+IFS=" " read -ra numbers <<< "$input"
 
-    #to exit
-    if [ "$input" == "E" ]; then 
-        break
-    fi
-
-    #checking valid input
-    if ! [[ "$input" =~ ^[0-9]$|^10$ ]]; then
-        echo "invalid input"
-        continue
-    fi
-
-    numbers[$input]=$((${numbers[$input]} + 1))
-
+for num in "${numbers[@]}"; do
+  if [[ "$num" =~ ^[1-9]$|^10$ ]]; then
+    count[$num]=$((count[$num] + 1))
+  else
+    echo "Invalid number: $num"
+  fi
 done
 
-
-#print the results
-for num in "${!numbers[@]}"; do
-    count=${numbers[$num]}
-    word="${num_words[$num]}"
-    if [ "$count" -eq 1 ]; then
-        echo "$word appeard 1 time"
-    else
-        echo "$word appeard $count times"
-    fi
+echo "Input analysis:"
+for num in "${!count[@]}"; do
+  word="${num_to_word[$num]}"
+  times="${count[$num]}"
+  echo "$word appeared $times times"
 done
