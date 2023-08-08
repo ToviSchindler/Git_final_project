@@ -1,27 +1,32 @@
-#! /bin/bash
-
-# Check if letters are passed as arguments
-if [ $# -eq 0 ]; then
-   # Read the letters from user
-   read -p "Enter alphabetical letters: " -a letters
+#!/bin/bash
+declare -A alphabet_values
+# Fill the associative array with the decimal values of letters
+for ((i=97; i<=122; i++)); do
+  alphabet_values["$(printf \\$(printf '%03o' "$i"))"]=$i
+done
+if [[ $# -gt 0 ]]; then
+  if [[ $1 == "-"* ]]; then
+    shift
+  fi
+  for letter in "$@"; do
+    if [[ ${alphabet_values[$letter]+isset} ]]; then
+      echo "$letter = ${alphabet_values[$letter]}"
+      echo "$letter = ${alphabet_values[$letter]}" > log_file
+    else
+      echo "Invalid input: $letter"
+      echo "Invalid input: $letter">log_file
+  fi
+  done
 else
-   # Extract letters from the arguments
-   letters=("$@")
+  read -p "Enter letters: " input
+  for letter in $input; do
+    if [[ ${alphabet_values[$letter]+isset} ]]; then
+       echo "$letter = ${alphabet_values[$letter]}"
+       echo "$letter = ${alphabet_values[$letter]}">log_file
+    else
+      echo "Invalid input: $letter"
+      echo "Invalid input: $letter" > log_file
+    fi
+  done
 fi
 
-# Declare an associative array to store the decimal values
-declare -A decimal_values
-
-# Iterate over the letters and populate the associative array
-for letter in "${letters[@]}"; do
-   # Get the decimal value of the letter
-   decimal_value=$(printf "%d" "'$letter'")
-
-   # Store the decimal value in the associative array
-   decimal_values["$letter"]=$decimal_value
-done
-
-#Print the decimal values
-for letter in "${!decimal_values[@]}"; do
-    echo "$letter = ${decimal_values[$letter]}"
-done

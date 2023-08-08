@@ -1,5 +1,5 @@
 #!/bin/bash
-while getopts ":1:2:3!4:5!6!" opt; do
+while getopts ":1!2!3!4!5!6!" opt; do
   case $opt in
     1)
       echo "Running Task 1"
